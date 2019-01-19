@@ -1,0 +1,2 @@
+{:paths ["src"]
+ :deps {ring/ring-core {:mvn/version "1.7.1"}}}

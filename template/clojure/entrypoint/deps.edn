@@ -1,0 +1,4 @@
+{:deps {function {:local/root "../function"}
+        ring/ring {:mvn/version "1.7.1"}}
+ :paths ["src"]
+ :aliases {:depstar {:extra-deps {seancorfield/depstar {:mvn/version "0.1.5"}}}}}
