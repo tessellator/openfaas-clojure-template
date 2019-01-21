@@ -35,6 +35,29 @@ be run in a jetty server in production.
 You may add and use ring middleware and other libraries per usual.
 
 
+### Using compojure
+
+If you would like your function to support subroutes of your main function
+route, you can use compojure to specify the subroutes. It is important to note
+that you only need to specify the subroute in your route definitions.
+
+For example, in order to handle a call to `/function/my-function/subroute/1234`,
+the `my-function` function might contain the following definition:
+
+```clojure
+(GET "/subroute/:id" [id]
+  ...)
+```
+
+
+### Adding items to the uberjar manifest
+
+It can occasionally be useful to add properties to the uberjar, such as
+specifying the `Implementation-Version`. This template will apply the properties
+defined in a `manifest.mf` file in the top-level function folder (alongside the
+`deps.edn` file).
+
+
 ## License
 
 Copyright © 2019 Thomas C. Taylor and contributors.
