@@ -11,7 +11,9 @@ RUN apk --no-cache add curl bash \
 WORKDIR /home/app/entrypoint
 COPY . /home/app
 
-RUN clojure -A:depstar -m hf.depstar.uberjar Entrypoint.jar
+RUN clojure -e "(compile 'entrypoint.core)" \
+    && clojure -A:depstar -m hf.depstar.uberjar Entrypoint.jar \
+    && if [ -f ../function/manifest.mf ] ; then echo "applying manifest" && jar umf ../function/manifest.mf ./Entrypoint.jar ; fi
 
 ## -----------------------------------------------------------------------------
 
