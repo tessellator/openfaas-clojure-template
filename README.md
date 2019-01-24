@@ -58,6 +58,31 @@ defined in a `manifest.mf` file in the top-level function folder (alongside the
 `deps.edn` file).
 
 
+### Running a server during local development
+
+The template provides development tools for running a Jetty server locally
+during development. The additional features are associated with the `dev` alias,
+so to access them you must use the following command to launch a REPL.
+
+```
+clj -A:dev
+```
+
+The REPL will now have access to the `function.server` namespace located in the
+dev folder. You can start the server with the following commands:
+
+```clojure
+(require '[function.server :as server])
+(server/start!)
+```
+
+You can provide [Jetty options](http://ring-clojure.github.io/ring/ring.adapter.jetty.html#var-run-jetty)
+to the `start!` function. For convenience, the options are stored between calls
+and are not necessary for subsequent calls to `start!`.
+
+You can stop the server by calling the `stop!` function.
+
+
 ## License
 
 Copyright © 2019 Thomas C. Taylor and contributors.
