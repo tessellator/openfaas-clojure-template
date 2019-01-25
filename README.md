@@ -1,5 +1,7 @@
 # OpenFaaS Clojure Template
 
+For a more in-depth walkthrough, please see my [introductory post](http://www.tessellator.net/2019-01-25-introducing-openfaas-clojure-template/).
+
 
 ## Installation
 
