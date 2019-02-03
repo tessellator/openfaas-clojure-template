@@ -1,12 +1,4 @@
-FROM openjdk:8u121-jdk-alpine as builder
-
-RUN apk --no-cache add curl bash \
-    && addgroup -S app && adduser -S -g app app \
-    && echo "Downloading Clojure installer." \
-    && curl -O https://download.clojure.org/install/linux-install-1.10.0.411.sh \
-    && chmod +x linux-install-1.10.0.411.sh \
-    && ./linux-install-1.10.0.411.sh \
-    && apk del curl
+FROM tessellator/openfaas-clojure-builder:latest as builder
 
 WORKDIR /home/app/entrypoint
 COPY . /home/app
