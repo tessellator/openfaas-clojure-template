@@ -9,7 +9,7 @@ RUN clojure -e "(compile 'entrypoint.core)" \
 
 ## -----------------------------------------------------------------------------
 
-FROM openjdk:8u121-jdk-alpine as ship
+FROM openjdk:8u181-jdk-alpine as ship
 RUN apk --no-cache add curl bash \
     && addgroup -S app && adduser -S -g app app \
     && echo "Pulling watchdog binary from Github." \
@@ -26,7 +26,7 @@ USER app
 ENV upstream_url="http://127.0.0.1:4000"
 ENV mode="http"
 
-ENV fprocess="java -cp Entrypoint.jar clojure.main -m entrypoint.core"
+ENV fprocess="java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XshowSettings:vm -cp Entrypoint.jar clojure.main -m entrypoint.core"
 EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
