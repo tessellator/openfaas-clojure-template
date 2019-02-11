@@ -26,7 +26,7 @@ USER app
 ENV upstream_url="http://127.0.0.1:4000"
 ENV mode="http"
 
-ENV fprocess="java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XshowSettings:vm -cp Entrypoint.jar clojure.main -m entrypoint.core"
+ENV fprocess="java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -cp Entrypoint.jar clojure.main -m entrypoint.core"
 EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
