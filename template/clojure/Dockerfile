@@ -31,4 +31,10 @@ EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
 
+# Do not let the watchdog create the lock file. The watchdog can create the lock
+# file before the Jetty instance is actually ready, causing the function to be
+# exposed too early and causing 500 Internal Server Error responses. Instead,
+# rely on the entrypoint to create the lock file when Jetty is ready.
+ENV suppress_lock=true
+
 CMD ["fwatchdog"]
