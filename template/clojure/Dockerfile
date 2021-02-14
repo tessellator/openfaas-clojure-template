@@ -9,18 +9,19 @@ RUN clojure -e "(compile 'entrypoint.core)" \
 
 ## -----------------------------------------------------------------------------
 
+FROM alpine:latest as fwatchdog-fetcher
+
+WORKDIR /home
+
+RUN apk add curl \
+    && curl -sSL https://github.com/openfaas/of-watchdog/releases/download/0.8.3/fwatchdog-amd64 > fwatchdog \
+    && chmod +x ./fwatchdog
+
+## -----------------------------------------------------------------------------
+
 FROM openjdk:8u181-jdk-alpine as ship
-RUN apk --no-cache add curl bash \
-    && addgroup -S app && adduser -S -g app app \
-    && echo "Pulling watchdog binary from GitHub." \
-    && curl -sSL https://github.com/openfaas/of-watchdog/releases/download/0.8.3/fwatchdog-amd64 > /usr/bin/fwatchdog \
-    && chmod +x /usr/bin/fwatchdog \
-    && apk del curl
 
-WORKDIR /home/app
-COPY --from=builder /home/app/entrypoint/Entrypoint.jar ./Entrypoint.jar
-
-RUN chown -R app /home/app
+RUN adduser -S app
 USER app
 
 ENV upstream_url="http://127.0.0.1:4000"
@@ -37,4 +38,7 @@ HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
 # rely on the entrypoint to create the lock file when Jetty is ready.
 ENV suppress_lock=true
 
-CMD ["fwatchdog"]
+CMD ["./fwatchdog"]
+
+COPY --chown=app --from=fwatchdog-fetcher /home/fwatchdog ./fwatchdog
+COPY --chown=app --from=builder /home/app/entrypoint/Entrypoint.jar ./Entrypoint.jar
