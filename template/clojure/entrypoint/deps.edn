@@ -1,4 +1,4 @@
 {:deps {function {:local/root "../function"}
-        ring/ring-jetty-adapter {:mvn/version "1.7.1"}}
+        ring/ring-jetty-adapter {:mvn/version "1.9.0"}}
  :paths ["src" "classes"]
  :aliases {:depstar {:extra-deps {seancorfield/depstar {:mvn/version "2.0.171"}}}}}
