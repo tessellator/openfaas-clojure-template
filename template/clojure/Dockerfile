@@ -12,8 +12,8 @@ RUN clojure -e "(compile 'entrypoint.core)" \
 FROM openjdk:8u181-jdk-alpine as ship
 RUN apk --no-cache add curl bash \
     && addgroup -S app && adduser -S -g app app \
-    && echo "Pulling watchdog binary from Github." \
-    && curl -sSL https://github.com/openfaas-incubator/of-watchdog/releases/download/0.4.6/of-watchdog > /usr/bin/fwatchdog \
+    && echo "Pulling watchdog binary from GitHub." \
+    && curl -sSL https://github.com/openfaas/of-watchdog/releases/download/0.8.3/fwatchdog-amd64 > /usr/bin/fwatchdog \
     && chmod +x /usr/bin/fwatchdog \
     && apk del curl
 
