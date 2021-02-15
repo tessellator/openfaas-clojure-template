@@ -21,7 +21,7 @@ RUN apk add curl \
 
 FROM openjdk:8u181-jdk-alpine as ship
 
-RUN adduser -S app
+RUN addgroup -S app && adduser -S app -G app
 USER app
 
 ENV upstream_url="http://127.0.0.1:4000"
