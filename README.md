@@ -87,6 +87,6 @@ You can stop the server by calling the `stop!` function.
 
 ## License
 
-Copyright © 2019 Thomas C. Taylor and contributors.
+Copyright © 2019-2021 Thomas C. Taylor and contributors.
 
 Distributed under the MIT License, the same as OpenFaaS.
