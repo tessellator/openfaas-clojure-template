@@ -1,4 +1,10 @@
 FROM openjdk:8u121-jdk-alpine as builder
+# NOTE: If you are targeting ARM64, you will run into an error because the
+# image above does not yet support that architecture. See this issue for more
+# details: https://github.com/tessellator/openfaas-clojure-template/issues/6. 
+# To work around this, comment out the FROM line above and uncomment the one 
+# below.
+#FROM balenalib/generic-aarch64-alpine-openjdk:8-20210225 as builder
 
 ENV CLOJURE_VERSION="1.10.3.822"
 
