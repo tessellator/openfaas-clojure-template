@@ -1,5 +1,10 @@
-{:paths ["src"]
- :deps {ring/ring-core {:mvn/version "1.9.0"}}
+{:paths 
+ ["src"]
+
+ :deps
+ {org.clojure/clojure {:mvn/version "1.10.3"}
+  ring/ring-core      {:mvn/version "1.9.0"}}
+
  :aliases
  {:dev {:extra-deps {ring/ring-devel {:mvn/version "1.9.0"}
                      ring/ring-jetty-adapter {:mvn/version "1.9.0"}}
