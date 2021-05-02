@@ -1,6 +1,24 @@
-FROM tessellator/openfaas-clojure-builder:latest as builder
+FROM openjdk:8u121-jdk-alpine as builder
+
+ENV CLOJURE_VERSION="1.10.3.822"
+
+RUN apk --no-cache add curl bash \
+    && curl -O https://download.clojure.org/install/linux-install-${CLOJURE_VERSION}.sh \
+    && chmod +x linux-install-${CLOJURE_VERSION}.sh \
+    && ./linux-install-${CLOJURE_VERSION}.sh
 
 WORKDIR /home/app/entrypoint
+COPY ./entrypoint/deps.edn ./deps.edn
+COPY ./function/deps.edn ../function/deps.edn
+
+RUN clojure -A:uberjar -Stree
+
+# During the build step, the dev dependencies from the function are fetched. I
+# do not know why. This line will go and fetch those dependencies as an
+# independent step so that if only the function code changes there will be no
+# need to fetch the dev dependencies.
+RUN cd ../function && clojure -A:dev -Stree && cd ../entrypoint
+
 COPY . /home/app
 
 RUN clojure -e "(compile 'entrypoint.core)" \
