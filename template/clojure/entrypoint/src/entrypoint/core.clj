@@ -27,6 +27,6 @@
                              (.delete (File. "/tmp/.lock")))))
   server)
 
-(defn -main [& args]
+(defn -main [& _args]
   (run-jetty app {:port 4000
                   :configurator add-lifecycle-listener}))
