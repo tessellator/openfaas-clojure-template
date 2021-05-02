@@ -13,8 +13,10 @@ FROM alpine:latest as fwatchdog-fetcher
 
 WORKDIR /home
 
+ENV WATCHDOG_VERSION="0.8.3"
+
 RUN apk add curl \
-    && curl -sSL https://github.com/openfaas/of-watchdog/releases/download/0.8.3/fwatchdog-amd64 > fwatchdog \
+    && curl -sSL https://github.com/openfaas/of-watchdog/releases/download/${WATCHDOG_VERSION}/fwatchdog-amd64 > fwatchdog \
     && chmod +x ./fwatchdog
 
 ## -----------------------------------------------------------------------------
