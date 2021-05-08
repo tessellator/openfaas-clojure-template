@@ -19,7 +19,7 @@ WORKDIR /home/app/entrypoint
 COPY ./entrypoint/deps.edn ./deps.edn
 COPY ./function/deps.edn ../function/deps.edn
 
-RUN clojure -A:uberjar -Stree
+RUN clojure -A:depstar -Stree
 
 # During the build step, the dev dependencies from the function are fetched. I
 # do not know why. This line will go and fetch those dependencies as an
