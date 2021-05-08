@@ -1,4 +1,5 @@
 (ns entrypoint.core
+  (:gen-class)
   (:require [ring.adapter.jetty :refer [run-jetty]]
             [function.core :refer [app]])
   (:import [org.eclipse.jetty.util.component LifeCycle$Listener]

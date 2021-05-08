@@ -19,7 +19,7 @@ WORKDIR /home/app/entrypoint
 COPY ./entrypoint/deps.edn ./deps.edn
 COPY ./function/deps.edn ../function/deps.edn
 
-RUN clojure -A:depstar -Stree
+RUN clojure -A:uberjar -Stree
 
 # During the build step, the dev dependencies from the function are fetched. I
 # do not know why. This line will go and fetch those dependencies as an
@@ -29,8 +29,7 @@ RUN cd ../function && clojure -A:dev -Stree && cd ../entrypoint
 
 COPY . /home/app
 
-RUN clojure -e "(compile 'entrypoint.core)" \
-    && clojure -A:depstar -m hf.depstar.uberjar Entrypoint.jar \
+RUN clojure -X:uberjar :jar Entrypoint.jar \
     && if [ -f ../function/manifest.mf ] ; then echo "applying manifest" && jar umf ../function/manifest.mf ./Entrypoint.jar ; fi
 
 ## -----------------------------------------------------------------------------
