@@ -36,6 +36,16 @@ be run in a jetty server in production.
 
 You may add and use ring middleware and other libraries per usual.
 
+### ARM64 Support
+
+The OpenJDK image used to build the function does not currently support the
+ARM64 architecture. There is an alternative image that may be used to get this
+support.
+
+If you need to enable ARM64 support you should
+[edit the Dockerfile](https://docs.openfaas.com/cli/templates/#update-the-dockerfile)
+and follow the instructions at the top of the file. This will be streamlined in
+a future release when the official OpenJDK images support ARM64.
 
 ### Using compojure
 
