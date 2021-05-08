@@ -1,9 +1,11 @@
 FROM openjdk:8u121-jdk-alpine as builder
-# NOTE: If you are targeting ARM64, you will run into an error because the
+# [ARM64]: If you are targeting ARM64, you will run into an error because the
 # image above does not yet support that architecture. See this issue for more
 # details: https://github.com/tessellator/openfaas-clojure-template/issues/6. 
 # To work around this, comment out the FROM line above and uncomment the one 
-# below.
+# below. 
+# You will also need to make changes in the other stages. Each section section 
+# that needs your attention will start with "[ARM64]".
 #FROM balenalib/generic-aarch64-alpine-openjdk:8-20210225 as builder
 
 ENV CLOJURE_VERSION="1.10.3.822"
@@ -39,13 +41,21 @@ WORKDIR /home
 
 ENV WATCHDOG_VERSION="0.8.3"
 
+# [ARM64]: The fwatchdog executable is prebuilt for various architectures. If
+# you are targeting ARM64, you will need to change the ARCH environment variable
+# to pull the correct executable.
+ENV ARCH=amd64
+# ENV ARCH=arm64
+
 RUN apk add curl \
-    && curl -sSL https://github.com/openfaas/of-watchdog/releases/download/${WATCHDOG_VERSION}/fwatchdog-amd64 > fwatchdog \
+    && curl -sSL https://github.com/openfaas/of-watchdog/releases/download/${WATCHDOG_VERSION}/fwatchdog-${ARCH} > fwatchdog \
     && chmod +x ./fwatchdog
 
 ## -----------------------------------------------------------------------------
 
+# [ARM64]: Use the same image as in the builder step.
 FROM openjdk:8u181-jdk-alpine as ship
+# FROM balenalib/generic-aarch64-alpine-openjdk:8-20210225 as ship
 
 RUN addgroup -S app && adduser -S app -G app
 USER app
