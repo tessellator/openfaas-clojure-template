@@ -19,6 +19,7 @@ COPY ./entrypoint/src ./src
 COPY ./entrypoint/classes ./classes
 
 RUN clojure -T:build uber
+RUN if [ -f ../function/manifest.mf ] ; then echo "applying manifest" && jar umf ../function/manifest.mf ./bin/Entrypoint.jar ; fi
 
 ## -----------------------------------------------------------------------------
 
