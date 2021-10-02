@@ -4,10 +4,10 @@ WORKDIR /home/app/entrypoint
 
 COPY ./entrypoint/deps.edn ./deps.edn
 COPY ./entrypoint/build.clj ./build.clj
-COPY ./function/deps.edn ../function/deps.edn
+COPY ./function/deps.edn ./function/manifest* ../function/
 
 RUN clojure -P
-RUN clojure -Abuild -P
+RUN clojure -A:build -P
 
 WORKDIR /home/app/function
 
