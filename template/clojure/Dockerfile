@@ -21,23 +21,6 @@ COPY ./entrypoint/classes ./classes
 RUN clojure -T:build uber
 RUN if [ -f ../function/manifest.mf ] ; then echo "applying manifest" && jar umf ../function/manifest.mf ./bin/Entrypoint.jar ; fi
 
-## -----------------------------------------------------------------------------
-
-FROM alpine:latest as fwatchdog-fetcher
-
-WORKDIR /home
-
-ENV WATCHDOG_VERSION="0.8.4"
-
-ARG ARCH=amd64
-
-RUN apk add curl \
-    && curl -sSL https://github.com/openfaas/of-watchdog/releases/download/${WATCHDOG_VERSION}/fwatchdog-${ARCH} > fwatchdog \
-    && chmod +x ./fwatchdog
-
-## -----------------------------------------------------------------------------
-
-# [ARM64]: Use the same image as in the builder step.
 FROM openjdk:17-alpine as ship
 
 RUN addgroup -S app && adduser -S app -G app
@@ -59,5 +42,5 @@ ENV suppress_lock=true
 
 CMD ["./fwatchdog"]
 
-COPY --chown=app --from=fwatchdog-fetcher /home/fwatchdog ./fwatchdog
+COPY --chown=app --from=ghcr.io/openfaas/of-watchdog:0.8.4 /fwatchdog ./fwatchdog
 COPY --chown=app --from=builder /home/app/entrypoint/bin/Entrypoint.jar ./Entrypoint.jar
