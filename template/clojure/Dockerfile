@@ -21,7 +21,7 @@ COPY ./entrypoint/classes ./classes
 RUN clojure -T:build uber
 RUN if [ -f ../function/manifest.mf ] ; then echo "applying manifest" && jar umf ../function/manifest.mf ./bin/Entrypoint.jar ; fi
 
-FROM openjdk:17-alpine as ship
+FROM openjdk:17 as ship
 
 RUN addgroup -S app && adduser -S app -G app
 USER app
