@@ -9,4 +9,5 @@
                   :class-dir "target/classes"})
   (b/uber {:class-dir "target/classes"
            :uber-file "bin/Entrypoint.jar"
-           :basis basis}))
+           :basis basis
+           :manifest {"Main-Class" "entrypoint.core"}}))
