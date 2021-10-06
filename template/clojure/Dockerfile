@@ -23,8 +23,8 @@ RUN if [ -f ../function/manifest.mf ] ; then echo "applying manifest" && jar umf
 
 FROM openjdk:17 as ship
 
-RUN addgroup -S app && adduser -S app -G app
-USER app
+RUN groupadd app && adduser app -g app
+USER app:app
 
 ENV upstream_url="http://127.0.0.1:4000"
 ENV mode="http"
