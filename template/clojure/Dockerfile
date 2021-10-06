@@ -3,7 +3,6 @@ FROM clojure:openjdk-17-tools-deps as builder
 WORKDIR /home/app/entrypoint
 
 COPY ./entrypoint/deps.edn ./deps.edn
-COPY ./entrypoint/build.clj ./build.clj
 COPY ./function/deps.edn ./function/manifest* ../function/
 
 RUN clojure -P
@@ -17,6 +16,7 @@ COPY ./function/src ./src
 WORKDIR /home/app/entrypoint
 COPY ./entrypoint/src ./src
 COPY ./entrypoint/classes ./classes
+COPY ./entrypoint/build.clj ./build.clj
 
 RUN clojure -T:build uber
 RUN if [ -f ../function/manifest.mf ] ; then echo "applying manifest" && jar umf ../function/manifest.mf ./bin/Entrypoint.jar ; fi
@@ -29,7 +29,7 @@ USER app:app
 ENV upstream_url="http://127.0.0.1:4000"
 ENV mode="http"
 
-ENV fprocess="java -cp Entrypoint.jar entrypoint.core"
+ENV fprocess="java -cp Entrypoint.jar"
 EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
