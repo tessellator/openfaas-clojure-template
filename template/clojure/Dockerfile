@@ -21,9 +21,9 @@ COPY ./entrypoint/classes ./classes
 RUN clojure -T:build uber
 RUN if [ -f ../function/manifest.mf ] ; then echo "applying manifest" && jar umf ../function/manifest.mf ./bin/Entrypoint.jar ; fi
 
-FROM openjdk:17 as ship
+FROM openjdk:17-slim-bullseye as ship
 
-RUN groupadd app && adduser app -g app
+RUN groupadd app && useradd -g app app
 USER app:app
 
 ENV upstream_url="http://127.0.0.1:4000"
