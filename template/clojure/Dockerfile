@@ -1,68 +1,35 @@
-FROM openjdk:8u121-jdk-alpine as builder
-# [ARM64]: If you are targeting ARM64, you will run into an error because the
-# image above does not yet support that architecture. See this issue for more
-# details: https://github.com/tessellator/openfaas-clojure-template/issues/6. 
-# To work around this, comment out the FROM line above and uncomment the one 
-# below. 
-# You will also need to make changes in the other stages. Each section section 
-# that needs your attention will start with "[ARM64]".
-#FROM balenalib/generic-aarch64-alpine-openjdk:8-20210225 as builder
-
-ENV CLOJURE_VERSION="1.10.3.822"
-
-RUN apk --no-cache add curl bash \
-    && curl -O https://download.clojure.org/install/linux-install-${CLOJURE_VERSION}.sh \
-    && chmod +x linux-install-${CLOJURE_VERSION}.sh \
-    && ./linux-install-${CLOJURE_VERSION}.sh
+FROM clojure:openjdk-17-tools-deps as builder
 
 WORKDIR /home/app/entrypoint
+
 COPY ./entrypoint/deps.edn ./deps.edn
-COPY ./function/deps.edn ../function/deps.edn
+COPY ./function/deps.edn ./function/manifest* ../function/
 
-RUN clojure -A:uberjar -Stree
+RUN clojure -P
+RUN clojure -A:build -P
 
-# During the build step, the dev dependencies from the function are fetched. I
-# do not know why. This line will go and fetch those dependencies as an
-# independent step so that if only the function code changes there will be no
-# need to fetch the dev dependencies.
-RUN cd ../function && clojure -A:dev -Stree && cd ../entrypoint
+WORKDIR /home/app/function
 
-COPY . /home/app
+RUN clojure -P
+COPY ./function/src ./src
 
-RUN clojure -X:uberjar :jar Entrypoint.jar \
-    && if [ -f ../function/manifest.mf ] ; then echo "applying manifest" && jar umf ../function/manifest.mf ./Entrypoint.jar ; fi
+WORKDIR /home/app/entrypoint
+COPY ./entrypoint/src ./src
+COPY ./entrypoint/classes ./classes
+COPY ./entrypoint/build.clj ./build.clj
 
-## -----------------------------------------------------------------------------
+RUN clojure -T:build uber
+RUN if [ -f ../function/manifest.mf ] ; then echo "applying manifest" && jar umf ../function/manifest.mf ./bin/Entrypoint.jar ; fi
 
-FROM alpine:latest as fwatchdog-fetcher
+FROM openjdk:17-slim-bullseye as ship
 
-WORKDIR /home
-
-ENV WATCHDOG_VERSION="0.8.3"
-
-# [ARM64]: The fwatchdog executable is prebuilt for various architectures. If
-# you are targeting ARM64, you will need to change the ARCH environment variable
-# to pull the correct executable.
-ENV ARCH=amd64
-# ENV ARCH=arm64
-
-RUN apk add curl \
-    && curl -sSL https://github.com/openfaas/of-watchdog/releases/download/${WATCHDOG_VERSION}/fwatchdog-${ARCH} > fwatchdog \
-    && chmod +x ./fwatchdog
-
-## -----------------------------------------------------------------------------
-
-# [ARM64]: Use the same image as in the builder step.
-FROM openjdk:8u181-jdk-alpine as ship
-# FROM balenalib/generic-aarch64-alpine-openjdk:8-20210225 as ship
-
-RUN addgroup -S app && adduser -S app -G app
-USER app
+RUN groupadd app && useradd -g app app
+USER app:app
 
 ENV upstream_url="http://127.0.0.1:4000"
 ENV mode="http"
 
-ENV fprocess="java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -cp Entrypoint.jar clojure.main -m entrypoint.core"
+ENV fprocess="java -jar Entrypoint.jar"
 EXPOSE 8080
 
 HEALTHCHECK --interval=2s CMD [ -e /tmp/.lock ] || exit 1
@@ -75,5 +42,5 @@ ENV suppress_lock=true
 
 CMD ["./fwatchdog"]
 
-COPY --chown=app --from=fwatchdog-fetcher /home/fwatchdog ./fwatchdog
-COPY --chown=app --from=builder /home/app/entrypoint/Entrypoint.jar ./Entrypoint.jar
+COPY --chown=app --from=ghcr.io/openfaas/of-watchdog:0.8.4 /fwatchdog ./fwatchdog
+COPY --chown=app --from=builder /home/app/entrypoint/bin/Entrypoint.jar ./Entrypoint.jar

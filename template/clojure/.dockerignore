@@ -2,3 +2,5 @@
 clj-kondo*.snap
 **/.cpcache/
 .lsp/*.db
+**/target
+**/bin

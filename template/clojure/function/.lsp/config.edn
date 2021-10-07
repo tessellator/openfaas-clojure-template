@@ -1,3 +1,0 @@
-{:linters {:unused-public-var {:level :warning
-                               :exclude #{function.core/app
-                                          function.server/restart!}}}}
