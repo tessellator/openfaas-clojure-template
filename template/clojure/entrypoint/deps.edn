@@ -1,5 +1,5 @@
 {:deps {function/function {:local/root "../function"}
         ring/ring-jetty-adapter {:mvn/version "1.9.4"}}
  :paths ["src" "classes"]
- :aliases {:build {:deps {io.github.clojure/tools.build {:git/tag "v0.5.1" :git/sha "21da7d4"}}
+ :aliases {:build {:deps {io.github.clojure/tools.build {:git/tag "v0.6.2" :git/sha "226fb52"}}
                    :ns-default build}}}
