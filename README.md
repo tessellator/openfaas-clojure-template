@@ -1,6 +1,6 @@
 # OpenFaaS Clojure Template
 
-For a more in-depth walkthrough, please see my [introductory post](http://www.tessellator.net/2019-01-25-introducing-openfaas-clojure-template/).
+For a more in-depth walkthrough, please see my [introductory post](https://www.tessellator.net/2019-01-25-introducing-openfaas-clojure-template/).
 
 
 ## Installation
@@ -77,7 +77,7 @@ dev folder. You can start the server with the following commands:
 (server/start!)
 ```
 
-You can provide [Jetty options](http://ring-clojure.github.io/ring/ring.adapter.jetty.html#var-run-jetty)
+You can provide [Jetty options](https://ring-clojure.github.io/ring/ring.adapter.jetty.html#var-run-jetty)
 to the `start!` function. For convenience, the options are stored between calls
 and are not necessary for subsequent calls to `start!`.
 
